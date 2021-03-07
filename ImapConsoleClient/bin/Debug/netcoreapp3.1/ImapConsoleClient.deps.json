@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "ImapConsoleClient/1.0.0": {
+        "dependencies": {
+          "Imap": "1.0.0"
+        },
+        "runtime": {
+          "ImapConsoleClient.dll": {}
+        }
+      },
+      "Imap/1.0.0": {
+        "runtime": {
+          "Imap.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ImapConsoleClient/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Imap/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

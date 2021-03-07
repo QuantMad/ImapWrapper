@@ -1,0 +1,17 @@
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\bin\Debug\netcoreapp3.1\Imap.deps.json
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\bin\Debug\netcoreapp3.1\Imap.dll
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\bin\Debug\netcoreapp3.1\Imap.pdb
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\obj\Debug\netcoreapp3.1\Imap.AssemblyInfoInputs.cache
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\obj\Debug\netcoreapp3.1\Imap.AssemblyInfo.cs
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\obj\Debug\netcoreapp3.1\Imap.csproj.CoreCompileInputs.cache
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\obj\Debug\netcoreapp3.1\Imap.dll
+C:\Users\quantmad\source\repos\WindowsFormsApp1\Imap\obj\Debug\netcoreapp3.1\Imap.pdb
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\bin\Debug\netcoreapp3.1\Imap.deps.json
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\bin\Debug\netcoreapp3.1\Imap.dll
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\bin\Debug\netcoreapp3.1\Imap.pdb
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\obj\Debug\netcoreapp3.1\Imap.csprojAssemblyReference.cache
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\obj\Debug\netcoreapp3.1\Imap.AssemblyInfoInputs.cache
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\obj\Debug\netcoreapp3.1\Imap.AssemblyInfo.cs
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\obj\Debug\netcoreapp3.1\Imap.csproj.CoreCompileInputs.cache
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\obj\Debug\netcoreapp3.1\Imap.dll
+C:\Users\quantmad\source\repos\ImapWrapper\Imap\obj\Debug\netcoreapp3.1\Imap.pdb
