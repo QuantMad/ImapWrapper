@@ -3,8 +3,10 @@ using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
 
-namespace Imap
+namespace Imap.Connector
 {
+    /// TODO: Состояние подключения
+
     /// <summary>
     /// Базовый класс. Реализует логику взаимодействия с IMAP сервером на уровне потоков данных
     /// </summary>
@@ -13,35 +15,37 @@ namespace Imap
         // Стандартный IMAP порт
         public const int STANDART_PORT = 993;
 
-        public delegate void CommandHandler(string command);
+        public enum ImapState
+        {
+            connected,
+            disconnected,
+            unauthenticated,
+            authenticated
+        }
+
+        //public delegate void RequestHandler(string command);
+        public delegate void ResponseHandler(ImapResponse command);
         // Событие приёма ответа сервера
-        public event CommandHandler RequestTransmitted;
+        //public event RequestHandler RequestTransmitted;
         // Событие отправки запроса серверу
-        public event CommandHandler ResponseRecieved;
+        public event ResponseHandler ResponseRecieved;
 
         // Флаг, определяющий будет ли производиться ведение лога запросов/ответов
         public bool LogEnabled = true;
 
         // Хранит последний ответ сервера
-        protected string _Response;
-        public bool RequestSuccess = false;
-
-        // Свойство реализует логику одноразового чтения и многоразовой записи.
-        public string Response
+        protected ImapResponse _Response;
+        public ImapResponse Response
         {
             get
             {
-                string resp = _Response;
-                _Response = "";
-
-                return resp;
+                var response = _Response;
+                _Response = null;
+                return response;
             }
-
             private set
             {
                 _Response = value;
-                Log("S: " + _Response);
-                RequestSuccess = _Response.Contains(" OK ");
                 ResponseRecieved?.Invoke(_Response);
             }
         }
@@ -69,15 +73,15 @@ namespace Imap
             ImapConnection.Connect(this.hostname, this.port);
             ImapStream = new SslStream(ImapConnection.GetStream(), true);
             ImapStream.AuthenticateAsClient(this.hostname);
-            Response = ImapStream.ReadAll();
+            Response = new ImapResponse(ImapStream.ReadAll());
         }
 
         public void SendMessage(string msg)
         {
             ImapStream.WriteString(msg);
-            RequestTransmitted?.Invoke(msg);
+            //RequestTransmitted?.Invoke(msg);
             Log("C: " + msg);
-            Response = ImapStream.ReadAll();
+            Response = new ImapResponse(ImapStream.ReadAll());
         }
 
         public void Disconnect()
@@ -91,7 +95,7 @@ namespace Imap
             return ImapConnection != null && ImapConnection.Connected;
         }
 
-        public string GetResponse()
+        public ImapResponse GetResponse()
         {
             return _Response;
         }

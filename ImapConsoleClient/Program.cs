@@ -1,5 +1,6 @@
 ﻿using System;
 using Imap;
+using Imap.Connector;
 
 namespace ImapConsoleClient
 {
@@ -16,12 +17,12 @@ namespace ImapConsoleClient
         {
             client = new ImapClient("Outlook.Office365.com", 993, false);
             client.LogEnabled = false;
-            client.Connect();
-            Console.WriteLine($"{client.hostname}:{client.port} Connection {(client.Connected() ? "success" : "failed")}");
             client.ResponseRecieved += (response) =>
             {
-                Console.WriteLine($"<:{response}");
+                Console.WriteLine("<:" + response.Content);
             };
+            client.Connect();
+            Console.WriteLine($"{client.hostname}:{client.port} Connection {(client.Connected() ? "success" : "failed")}");
         }
 
         public void Run()
@@ -32,6 +33,7 @@ namespace ImapConsoleClient
             {
                 if (input == "qqq") return;
                 client.SendMessage("A002 " + input);
+                //Console.WriteLine($"<:{client.Response.Content}");
                 Console.Write(">:");
             }
         }

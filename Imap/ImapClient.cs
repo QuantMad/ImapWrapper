@@ -1,4 +1,4 @@
-﻿namespace Imap
+﻿namespace Imap.Connector
 {
     public class ImapClient : ImapConnector
     {
