@@ -1,21 +1,21 @@
 ﻿namespace Imap.Connector
 {
-    public class ImapClient : ImapConnector
+    public class ImapClient : ImapConnection
     {
-        public ImapClient(string hostname = null, int port = STANDART_PORT, bool logEnabled = true) :
-            base(hostname, port, logEnabled)
+        public ImapClient(string hostname = null, int port = IMAP_STANDART_PORT) :
+            base(hostname, port)
         {
 
         }
 
         public void Noop()
         {
-            SendMessage("A002 NOOP");
+            WriteMessage("A002 NOOP");
         }
 
         public void Capability()
         {
-            SendMessage("A002 CAPABILITY");
+            WriteMessage("A002 CAPABILITY");
         }
     }
 }

@@ -1,7 +1,15 @@
-﻿namespace Imap.Connector
+﻿using Imap.Responses;
+
+namespace Imap.Connector
 {
     public class ImapResponse
     {
+        private ResponseType _Type;
+        public ResponseType Type
+        {
+            get => _Type;
+        }
+
         private bool _IsSuccess = false;
         public bool IsSuccess
         {

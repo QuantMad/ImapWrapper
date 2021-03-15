@@ -15,14 +15,11 @@ namespace ImapConsoleClient
 
         public Program()
         {
-            client = new ImapClient("Outlook.Office365.com", 993, false);
-            client.LogEnabled = false;
-            client.ResponseRecieved += (response) =>
-            {
-                Console.WriteLine("<:" + response.Content);
-            };
-            client.Connect();
-            Console.WriteLine($"{client.hostname}:{client.port} Connection {(client.Connected() ? "success" : "failed")}");
+            client = new ImapClient("Outlook.Office365.com");
+            Console.WriteLine(client.Connect());
+            Console.WriteLine($"{client.Host}:{client.Port} Connection {(client.IsConnected ? "success" : "failed")}");
+            //Console.WriteLine(client.WriteMessage("NOOP"));
+            //Console.WriteLine(client.ReadResponse());
         }
 
         public void Run()
@@ -32,9 +29,10 @@ namespace ImapConsoleClient
             while ((input = Console.ReadLine()) != "qqq")
             {
                 if (input == "qqq") return;
-                client.SendMessage("A002 " + input);
-                //Console.WriteLine($"<:{client.Response.Content}");
-                Console.Write(">:");
+                string rs = client.WriteMessage(input);
+                Console.WriteLine($"<:" + "A001 " + input);
+                Console.WriteLine(">:" + client.ReadResponse());
+                Console.Write("<:");
             }
         }
     }
