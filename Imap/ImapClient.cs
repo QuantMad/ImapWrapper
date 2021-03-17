@@ -1,4 +1,6 @@
-﻿namespace Imap.Connector
+﻿using System;
+
+namespace Imap.Connector
 {
     public class ImapClient : ImapConnection
     {
@@ -10,12 +12,16 @@
 
         public void Noop()
         {
-            WriteMessage("A002 NOOP");
+            Sand("NOOP");
         }
 
-        public void Capability()
+        public ImapResponse Login(string name, string password)
         {
-            WriteMessage("A002 CAPABILITY");
+            var result = Sand($"LOGIN {name} {password}");
+            if (result.Content.Contains("OK"))
+                return result;
+
+            return null;
         }
     }
 }

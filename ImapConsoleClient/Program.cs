@@ -16,22 +16,20 @@ namespace ImapConsoleClient
         public Program()
         {
             client = new ImapClient("Outlook.Office365.com");
-            Console.WriteLine(client.Connect());
-            Console.WriteLine($"{client.Host}:{client.Port} Connection {(client.IsConnected ? "success" : "failed")}");
-            //Console.WriteLine(client.WriteMessage("NOOP"));
-            //Console.WriteLine(client.ReadResponse());
+            client.Connect();
         }
 
         public void Run()
         {
+            Console.WriteLine(client.ToString() + "\n");
             Console.Write(">:");
             string input;
             while ((input = Console.ReadLine()) != "qqq")
             {
                 if (input == "qqq") return;
-                string rs = client.WriteMessage(input);
-                Console.WriteLine($"<:" + "A001 " + input);
-                Console.WriteLine(">:" + client.ReadResponse());
+                var rs = client.Sand(input);
+                Console.WriteLine($"<:" + input);
+                Console.WriteLine(">:" + rs.Content);
                 Console.Write("<:");
             }
         }

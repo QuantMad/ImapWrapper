@@ -7,10 +7,11 @@
         public const string Bad = "BAD";
         public const string PreAuth = "PREAUTH";
 
-        public const string Prefix = "*";
-        public const string ServerOk = Prefix + " OK";
-        public const string ServerBad = Prefix + " BAD";
-        public const string ServerNo = Prefix + " NO";
-        public const string ServerPreAuth = Prefix + " PREAUTH";
+        public const string Prefix = "* ";
+        public const string ServerOk = Prefix + Ok;
+        public const string ServerBad = Prefix + Bad;
+        public const string ServerBye = Prefix + "BYE";
+        public const string ServerNo = Prefix + No;
+        public const string ServerPreAuth = Prefix + PreAuth;
     }
 }

@@ -1,16 +1,17 @@
 ﻿using Imap.Exceptions;
+using Imap.Responses;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Imap.Connector
 {
-    public class ImapConnection : IDisposable
+    public class ImapConnection
     {
         private const string CRLF = "\r\n";
 
@@ -50,22 +51,24 @@ namespace Imap.Connector
         private Stream ImapStream;
         private StreamReader ImapStreamReader;
 
+        int counter = 0;
+
+        private readonly ConcurrentDictionary<string, ImapResponse> MarkedResponses = new ConcurrentDictionary<string, ImapResponse>();
+        private readonly List<ImapResponse> UnmarkedResponses = new List<ImapResponse>();
+
         public ImapConnection(string host = null, int port = IMAP_STANDART_PORT)
         {
             _Host = host;
             _Port = port;
         }
 
-        public bool Connect()
-        {
-            return Connect(_Host, _Port);
-        }
+        public bool Connect() => Connect(_Host, _Port);
 
         public bool Connect(string host, int port = IMAP_STANDART_PORT)
         {
-            if (IsConnected) 
+            if (IsConnected)
                 throw new ImapConnectionException("Попытка подключения с уже установленным соединением");
-                
+
             _Host = host;
             _Port = port;
 
@@ -81,11 +84,10 @@ namespace Imap.Connector
                     return false;
 
                 ImapStream = Connection.GetStream();
-                //(ImapStream as SslStream).AuthenticateAsClient(_Host);
                 ImapStreamReader = new StreamReader(ImapStream);
-                string result = ImapStreamReader.ReadLine(); /// TODO: обработать приветствие сервера
+                ServerHello();
                 Capability();
-                Console.WriteLine(result);
+                ListenServer();
             }
             catch (Exception)
             {
@@ -95,28 +97,72 @@ namespace Imap.Connector
             return true;
         }
 
-        protected string Capability()
+        private void ServerHello()
         {
-            /// TODO структура отвечающая за возможности IMAP сервера
-            return "";
+            /// TODO Обработать приветствие сервера до начала прослушивания сервера
         }
 
-        public string ReadResponse()
+        private void Capability()
         {
-            return ImapStreamReader.ReadLine();
+            /// TODO Обработать возможности сервера до начала прослушивания сервера
         }
 
-        public string WriteMessage(string message)
+        public async Task<ImapResponse> WaitForResponse(string tag)
         {
-            byte[] bytes = Encoding.ASCII.GetBytes("A001 " + message + CRLF);
+            return await Task.Run(() =>
+            {
+                while (!MarkedResponses.ContainsKey(tag))
+                {
+                    Task.Delay(500);
+                }
+                ImapResponse response;
+                MarkedResponses.TryRemove(tag, out response);
+                Console.WriteLine("Ответ на " + response.Tag + " пришёл: " + response.Content);
+                return response;
+            });
+        }
+
+        public ImapResponse Sand(string message)
+        {
+            if (!IsConnected)
+                throw new ImapConnectionException("Соединение разорвано либо не было установлено");
+
+            string tag = $"IMAP{counter++}";
+            string command = $"{tag} {message} {CRLF}";
+
+            byte[] bytes = Encoding.ASCII.GetBytes(command);
             ImapStream.Write(bytes, 0, bytes.Length);
-
-            return "";
+            Console.WriteLine("Ждём ответ на " + tag);
+            return WaitForResponse(tag).Result;
         }
 
-        public void Dispose()
+        public void ListenServer()
         {
-            throw new NotImplementedException();
+            new Thread(() =>
+            {
+                while (IsConnected)
+                {
+                    var response = new ImapResponse(ImapStreamReader.ReadLine());
+
+                    if (response != null)
+                    {
+                        if (!response.IsMarked)
+                        {
+                            UnmarkedResponses.Add(response);
+                        }
+                        else
+                        {
+                            MarkedResponses.TryAdd(response.Tag, response);
+                        }
+                    }
+                    Thread.Sleep(500);
+                }
+            }).Start();
+        }
+
+        public override string ToString()
+        {
+            return $"Host: {_Host}\nPort: {_Port}\nIsConnected: {IsConnected}";
         }
     }
 }
